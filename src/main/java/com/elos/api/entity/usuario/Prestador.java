@@ -20,10 +20,10 @@ public class Prestador implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "i\1_\2restador")
+    @Column(name = "id_prestador")
     private Long idPrestador;
 
-    @Column(name = "i\1_\2suario")
+    @Column(name = "id_usuario")
     private Long idUsuario;
 
     @Column(name = "cpf")
@@ -32,10 +32,10 @@ public class Prestador implements Serializable {
     @Column(name = "cnpj")
     private String cnpj;
 
-    @Column(name = "tip\1_\2restador")
+    @Column(name = "tipo_prestador")
     private String tipoPrestador;
 
-    @Column(name = "statu\1_\2provacao")
+    @Column(name = "status_aprovacao")
     private String statusAprovacao;
 
 

@@ -19,16 +19,16 @@ public class MensagemTicket implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "i\1_\2ensage\1_\2icket")
+    @Column(name = "id_mensagem_ticket")
     private Long idMensagemTicket;
 
-    @Column(name = "i\1_\2icket")
+    @Column(name = "id_ticket")
     private Long idTicket;
 
     @Column(name = "mensagem")
     private String mensagem;
 
-    @Column(name = "dat\1_\2ora")
+    @Column(name = "data_hora")
     private LocalDateTime dataHora;
 
 

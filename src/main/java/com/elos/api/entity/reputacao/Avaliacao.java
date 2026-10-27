@@ -18,13 +18,13 @@ public class Avaliacao implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "i\1_\2valiacao")
+    @Column(name = "id_avaliacao")
     private Long idAvaliacao;
 
-    @Column(name = "i\1_\2suari\1_\2valiador")
+    @Column(name = "id_usuario_avaliador")
     private Long idUsuarioAvaliador;
 
-    @Column(name = "i\1_\2ontratacao")
+    @Column(name = "id_contratacao")
     private Long idContratacao;
 
     @Column(name = "nota")
@@ -33,7 +33,7 @@ public class Avaliacao implements Serializable {
     @Column(name = "comentario")
     private String comentario;
 
-    @Column(name = "i\1_\2suari\1_\2valiado")
+    @Column(name = "id_usuario_avaliado")
     private Long idUsuarioAvaliado;
 
 

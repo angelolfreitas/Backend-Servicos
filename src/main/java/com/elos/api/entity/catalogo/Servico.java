@@ -19,13 +19,13 @@ public class Servico implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "i\1_\2ervico")
+    @Column(name = "id_servico")
     private Long idServico;
 
-    @Column(name = "i\1_\2ip\1_\2ervico")
+    @Column(name = "id_tipo_servico")
     private Long idTipoServico;
 
-    @Column(name = "i\1_\2restador")
+    @Column(name = "id_prestador")
     private Long idPrestador;
 
     @Column(name = "descricao")

@@ -18,16 +18,16 @@ public class Anexo implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "i\1_\2nexo")
+    @Column(name = "id_anexo")
     private Long idAnexo;
 
-    @Column(name = "i\1_\2ensagem")
+    @Column(name = "id_mensagem")
     private Long idMensagem;
 
     @Column(name = "arquivo")
     private String arquivo;
 
-    @Column(name = "tip\1_\2rquivo")
+    @Column(name = "tipo_arquivo")
     private String tipoArquivo;
 
 }

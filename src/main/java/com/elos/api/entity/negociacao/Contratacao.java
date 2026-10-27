@@ -19,28 +19,28 @@ public class Contratacao implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "i\1_\2ontratacao")
+    @Column(name = "id_contratacao")
     private Long idContratacao;
 
-    @Column(name = "i\1_\2liente")
+    @Column(name = "id_cliente")
     private Long idCliente;
 
-    @Column(name = "i\1_\2restador")
+    @Column(name = "id_prestador")
     private Long idPrestador;
 
-    @Column(name = "i\1_\2ervico")
+    @Column(name = "id_servico")
     private Long idServico;
 
-    @Column(name = "i\1_\2roposta")
+    @Column(name = "id_proposta")
     private Long idProposta;
 
-    @Column(name = "dat\1_\2nicio")
+    @Column(name = "data_inicio")
     private LocalDate dataInicio;
 
-    @Column(name = "dat\1_\2inalizaca\1_\2revista")
+    @Column(name = "data_finalizacao_prevista")
     private LocalDate dataFinalizacaoPrevista;
 
-    @Column(name = "dat\1_\2inalizacao")
+    @Column(name = "data_finalizacao")
     private LocalDate dataFinalizacao;
 
     @Column(name = "status")

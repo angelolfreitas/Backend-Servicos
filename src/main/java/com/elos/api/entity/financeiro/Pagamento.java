@@ -20,16 +20,16 @@ public class Pagamento implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "i\1_\2agamento")
+    @Column(name = "id_pagamento")
     private Long idPagamento;
 
-    @Column(name = "i\1_\2ontratacao")
+    @Column(name = "id_contratacao")
     private Long idContratacao;
 
-    @Column(name = "valo\1_\2otal")
+    @Column(name = "valor_total")
     private BigDecimal valorTotal;
 
-    @Column(name = "form\1_\2agamento")
+    @Column(name = "forma_pagamento")
     private String formaPagamento;
 
     @Column(name = "status")

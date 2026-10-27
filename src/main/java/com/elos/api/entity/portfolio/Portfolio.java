@@ -18,13 +18,13 @@ public class Portfolio implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "i\1_\2ortfolio")
+    @Column(name = "id_portfolio")
     private Long idPortfolio;
 
-    @Column(name = "i\1_\2restador")
+    @Column(name = "id_prestador")
     private Long idPrestador;
 
-    @Column(name = "fot\1_\2erfil")
+    @Column(name = "foto_perfil")
     private String fotoPerfil;
 
     @Column(name = "curriculo")

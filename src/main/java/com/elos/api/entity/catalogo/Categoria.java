@@ -18,13 +18,13 @@ public class Categoria implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "i\1_\2ategoria")
+    @Column(name = "id_categoria")
     private Long idCategoria;
 
     @Column(name = "nome")
     private String nome;
 
-    @Column(name = "statu\1_\2tivo")
+    @Column(name = "status_ativo")
     private String statusAtivo;
 
 

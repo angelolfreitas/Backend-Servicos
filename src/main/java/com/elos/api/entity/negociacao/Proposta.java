@@ -20,22 +20,22 @@ public class Proposta implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "i\1_\2roposta")
+    @Column(name = "id_proposta")
     private Long idProposta;
 
-    @Column(name = "i\1_\2liente")
+    @Column(name = "id_cliente")
     private Long idCliente;
 
-    @Column(name = "i\1_\2restador")
+    @Column(name = "id_prestador")
     private Long idPrestador;
 
-    @Column(name = "i\1_\2ervico")
+    @Column(name = "id_servico")
     private Long idServico;
 
     @Column(name = "valor")
     private BigDecimal valor;
 
-    @Column(name = "dat\1_\2nicio")
+    @Column(name = "data_inicio")
     private LocalDate dataInicio;
 
     @Column(name = "validade")

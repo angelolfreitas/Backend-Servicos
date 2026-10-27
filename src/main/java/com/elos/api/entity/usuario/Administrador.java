@@ -18,10 +18,10 @@ public class Administrador implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "i\1_\2dministrador")
+    @Column(name = "id_administrador")
     private Long idAdministrador;
 
-    @Column(name = "i\1_\2suario")
+    @Column(name = "id_usuario")
     private Long idUsuario;
 
 

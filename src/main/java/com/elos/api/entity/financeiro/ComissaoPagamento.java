@@ -19,10 +19,10 @@ public class ComissaoPagamento implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "i\1_\2omissa\1_\2agamento")
+    @Column(name = "id_comissao_pagamento")
     private Long idComissaoPagamento;
 
-    @Column(name = "i\1_\2agamento")
+    @Column(name = "id_pagamento")
     private Long idPagamento;
 
     @Column(name = "percentual")

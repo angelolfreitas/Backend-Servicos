@@ -21,7 +21,7 @@ public class Usuario implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "i\1_\2suario")
+    @Column(name = "id_usuario")
     private Long idUsuario;
 
     @Column(name = "nome")
@@ -36,12 +36,12 @@ public class Usuario implements Serializable {
     @Column(name = "telefone")
     private String telefone;
 
-    @Column(name = "tip\1_\2onta")
+    @Column(name = "tipo_conta")
     private String tipoConta;
 
-    @Column(name = "statu\1_\2onta")
+    @Column(name = "status_conta")
     private String statusConta;
 
-    @Column(name = "dat\1_\2adastro")
+    @Column(name = "data_cadastro")
     private LocalDate dataCadastro;
 }

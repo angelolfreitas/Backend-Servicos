@@ -19,28 +19,28 @@ public class Ticket implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "i\1_\2icket")
+    @Column(name = "id_ticket")
     private Long idTicket;
 
-    @Column(name = "i\1_\2suario")
+    @Column(name = "id_usuario")
     private Long idUsuario;
 
-    @Column(name = "i\1_\2dministrador")
+    @Column(name = "id_administrador")
     private Long idAdministrador;
 
     @Column(name = "protocolo")
     private String protocolo;
 
-    @Column(name = "categori\1_\2roblema")
+    @Column(name = "categoria_problema")
     private String categoriaProblema;
 
     @Column(name = "status")
     private String status;
 
-    @Column(name = "dat\1_\2bertura")
+    @Column(name = "data_abertura")
     private LocalDateTime dataAbertura;
 
-    @Column(name = "dat\1_\2echamento")
+    @Column(name = "data_fechamento")
     private LocalDateTime dataFechamento;
 
 

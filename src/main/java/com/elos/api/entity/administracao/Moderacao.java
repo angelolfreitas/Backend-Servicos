@@ -18,22 +18,22 @@ public class Moderacao implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "i\1_\2oderacao")
+    @Column(name = "id_moderacao")
     private Long idModeracao;
 
-    @Column(name = "i\1_\2dministrador")
+    @Column(name = "id_administrador")
     private Long idAdministrador;
 
-    @Column(name = "i\1_\2suario")
+    @Column(name = "id_usuario")
     private Long idUsuario;
 
-    @Column(name = "i\1_\2ensagem")
+    @Column(name = "id_mensagem")
     private Long idMensagem;
 
-    @Column(name = "i\1_\2valiacao")
+    @Column(name = "id_avaliacao")
     private Long idAvaliacao;
 
-    @Column(name = "tip\1_\2cao")
+    @Column(name = "tipo_acao")
     private String tipoAcao;
 
 }

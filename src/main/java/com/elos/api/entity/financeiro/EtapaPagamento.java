@@ -20,10 +20,10 @@ public class EtapaPagamento implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "i\1_\2tap\1_\2agamento")
+    @Column(name = "id_etapa_pagamento")
     private Long idEtapaPagamento;
 
-    @Column(name = "i\1_\2agamento")
+    @Column(name = "id_pagamento")
     private Long idPagamento;
 
     @Column(name = "percentual")
@@ -35,6 +35,6 @@ public class EtapaPagamento implements Serializable {
     @Column(name = "status")
     private String status;
 
-    @Column(name = "dat\1_\2iberacao")
+    @Column(name = "data_liberacao")
     private LocalDateTime dataLiberacao;
 }

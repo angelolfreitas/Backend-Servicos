@@ -19,16 +19,16 @@ public class Consentimento implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "i\1_\2onsentimento")
+    @Column(name = "id_consentimento")
     private Long idConsentimento;
 
-    @Column(name = "i\1_\2suario")
+    @Column(name = "id_usuario")
     private Long idUsuario;
 
-    @Column(name = "tip\1_\2onsentimento")
+    @Column(name = "tipo_consentimento")
     private String tipoConsentimento;
 
-    @Column(name = "dat\1_\2ora")
+    @Column(name = "data_hora")
     private LocalDateTime dataHora;
 
 

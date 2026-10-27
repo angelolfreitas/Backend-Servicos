@@ -19,22 +19,22 @@ public class Documento implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "i\1_\2ocumento")
+    @Column(name = "id_documento")
     private Long idDocumento;
 
-    @Column(name = "i\1_\2restador")
+    @Column(name = "id_prestador")
     private Long idPrestador;
 
-    @Column(name = "tip\1_\2ocumento")
+    @Column(name = "tipo_documento")
     private String tipoDocumento;
 
     @Column(name = "anexo")
     private String anexo;
 
-    @Column(name = "dat\1_\2nvio")
+    @Column(name = "data_envio")
     private LocalDate dataEnvio;
 
-    @Column(name = "statu\1_\2nalise")
+    @Column(name = "status_analise")
     private String statusAnalise;
 
 }

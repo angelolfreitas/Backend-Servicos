@@ -18,10 +18,10 @@ public class FotoPortfolio implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "i\1_\2ot\1_\2ortfolio")
+    @Column(name = "id_foto_portfolio")
     private Long idFotoPortfolio;
 
-    @Column(name = "i\1_\2ortfolio")
+    @Column(name = "id_portfolio")
     private Long idPortfolio;
 
     @Column(name = "anexo")

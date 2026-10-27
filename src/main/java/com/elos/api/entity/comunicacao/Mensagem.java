@@ -19,19 +19,19 @@ public class Mensagem implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "i\1_\2ensagem")
+    @Column(name = "id_mensagem")
     private Long idMensagem;
 
-    @Column(name = "i\1_\2ontratacao")
+    @Column(name = "id_contratacao")
     private Long idContratacao;
 
     @Column(name = "mensagem")
     private String mensagem;
 
-    @Column(name = "dat\1_\2ora")
+    @Column(name = "data_hora")
     private LocalDateTime dataHora;
 
-    @Column(name = "i\1_\2suari\1_\2emetente")
+    @Column(name = "id_usuario_remetente")
     private Long idUsuarioRemetente;
 
 }
