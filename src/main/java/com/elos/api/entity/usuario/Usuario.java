@@ -1,13 +1,15 @@
 package com.elos.api.entity.usuario;
 
+import com.elos.api.entity.usuario.role.Role;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.Collection;
 
 /** Entidade do modelo ELOS. Relacionamentos mantidos como IDs nesta primeira etapa para facilitar futura divisão em microsserviços. */
 @Setter
@@ -15,7 +17,9 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "usuario")
 @NoArgsConstructor
-public class Usuario implements Serializable {
+@Builder
+@AllArgsConstructor
+public class Usuario implements Serializable, UserDetails {
     @Serial
     private static final long serialVersionUID = 1L;
 
@@ -25,13 +29,13 @@ public class Usuario implements Serializable {
     private Long idUsuario;
 
     @Column(name = "nome")
-    private String nome;
+    private String username;
 
     @Column(name = "email")
     private String email;
 
     @Column(name = "senha")
-    private String senha;
+    private String password;
 
     @Column(name = "telefone")
     private String telefone;
@@ -44,4 +48,14 @@ public class Usuario implements Serializable {
 
     @Column(name = "data_cadastro")
     private LocalDate dataCadastro;
+
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return role.getAuthorities();
+    }
+
+
 }
