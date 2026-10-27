@@ -1,0 +1,42 @@
+package com.elos.api.entity.usuario;
+
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.io.Serial;
+import java.io.Serializable;
+
+/** Entidade do modelo ELOS. Relacionamentos mantidos como IDs nesta primeira etapa para facilitar futura divisão em microsserviços. */
+@Setter
+@Getter
+@Entity
+@Table(name = "prestador")
+@NoArgsConstructor
+public class Prestador implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "i\1_\2restador")
+    private Long idPrestador;
+
+    @Column(name = "i\1_\2suario")
+    private Long idUsuario;
+
+    @Column(name = "cpf")
+    private String cpf;
+
+    @Column(name = "cnpj")
+    private String cnpj;
+
+    @Column(name = "tip\1_\2restador")
+    private String tipoPrestador;
+
+    @Column(name = "statu\1_\2provacao")
+    private String statusAprovacao;
+
+
+}
