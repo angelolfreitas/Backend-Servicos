@@ -1,8 +1,7 @@
 package com.elos.api.entity.catalogo;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -13,6 +12,9 @@ import java.math.BigDecimal;
 @Getter
 @Entity
 @Table(name = "servico")
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Servico implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
