@@ -1,4 +1,4 @@
-package com.elos.api.security.config;
+package com.elos.api.config;
 
 import com.elos.api.security.CustomUserDetailsService;
 import com.elos.api.security.SecurityFilter;

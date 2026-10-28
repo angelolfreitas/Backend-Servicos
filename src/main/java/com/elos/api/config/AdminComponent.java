@@ -1,4 +1,4 @@
-package com.elos.api.security.config;
+package com.elos.api.config;
 import com.elos.api.dto.usuario.RegisterRequest;
 import com.elos.api.entity.usuario.role.Role;
 import com.elos.api.service.usuario.AuthenticationService;
