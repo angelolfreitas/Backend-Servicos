@@ -7,6 +7,7 @@ import com.elos.catalogo_service.dto.catalogo.ServicoRequest;
 import com.elos.catalogo_service.dto.catalogo.ServicoResponse;
 import com.elos.catalogo_service.repository.PrestadorHabilitadoRepository;
 import com.elos.catalogo_service.repository.ServicoRepository;
+import com.elos.catalogo_service.repository.TipoServicoRepository;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.HttpStatus;
@@ -21,6 +22,7 @@ public class ServicoService {
 
     private final ServicoRepository servicoRepository;
     private final PrestadorHabilitadoRepository prestadorHabilitadoRepository;
+    private final TipoServicoRepository tipoServicoRepository;
 
     public List<ServicoResponse> listarTodos() {
         return servicoRepository.findAll().stream().map(ServicoResponse::criar).toList();
@@ -54,6 +56,9 @@ public class ServicoService {
     }
 
     public ServicoResponse criar(ServicoRequest req, Long idUsuario) {
+        tipoServicoRepository.findById(req.idTipoServico())
+                .filter(t -> "ATIVO".equals(t.getStatusAtivo()))
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Tipo de serviço inválido"));
         Servico servico = Servico.builder()
                 .idTipoServico(req.idTipoServico())
                 .idPrestador(idPrestadorDe(idUsuario))
