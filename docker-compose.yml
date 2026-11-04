@@ -1,0 +1,72 @@
+services:
+  db:
+    image: mysql:8
+    environment:
+      MYSQL_ROOT_PASSWORD: "12345678"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-p12345678"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+    volumes:
+      - dbdata:/var/lib/mysql
+
+  kafka:
+    image: apache/kafka:latest
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+
+  usuario-service:
+    image: angelofr/elos-usuario-service
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/usuario_db?createDatabaseIfNotExist=true
+    volumes:
+      - uploads_usuario:/app/uploads
+    depends_on:
+      db: { condition: service_healthy }
+      kafka: { condition: service_started }
+    restart: on-failure
+
+  catalogo-service:
+    image: angelofr/elos-catalogo-service
+    ports:
+      - "8082:8082"
+    environment:
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/catalogo_db?createDatabaseIfNotExist=true
+    volumes:
+      - uploads_catalogo:/app/uploads
+    depends_on:
+      db: { condition: service_healthy }
+      kafka: { condition: service_started }
+    restart: on-failure
+
+  negociacao-service:
+    image: angelofr/elos-negociacao-service
+    ports:
+      - "8083:8083"
+    environment:
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/negociacao_db?createDatabaseIfNotExist=true
+    depends_on:
+      db: { condition: service_healthy }
+      kafka: { condition: service_started }
+    restart: on-failure
+
+volumes:
+  dbdata:
+  uploads_usuario:
+  uploads_catalogo:
