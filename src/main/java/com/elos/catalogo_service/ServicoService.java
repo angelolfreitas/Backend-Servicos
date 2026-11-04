@@ -3,6 +3,7 @@ package com.elos.catalogo_service;
 
 
 import com.elos.catalogo_service.catalogo.Servico;
+import com.elos.catalogo_service.dto.catalogo.ServicoAtualizado;
 import com.elos.catalogo_service.dto.catalogo.ServicoRequest;
 import com.elos.catalogo_service.dto.catalogo.ServicoResponse;
 import com.elos.catalogo_service.repository.PrestadorHabilitadoRepository;
@@ -23,9 +24,13 @@ public class ServicoService {
     private final ServicoRepository servicoRepository;
     private final PrestadorHabilitadoRepository prestadorHabilitadoRepository;
     private final TipoServicoRepository tipoServicoRepository;
+    private final EventPublisher events;
 
     public List<ServicoResponse> listarTodos() {
         return servicoRepository.findAll().stream().map(ServicoResponse::criar).toList();
+    }
+    private void publicar(Servico s, Long idUsuario, String status) {
+        events.servicoAtualizado(new ServicoAtualizado(s.getIdServico(), idUsuario, s.getValor(), status));
     }
 
     private Servico buscarPorId(Long id) {
@@ -66,7 +71,9 @@ public class ServicoService {
                 .valor(req.valor())
                 .status(req.status())
                 .build();
-        return ServicoResponse.criar(servicoRepository.save(servico));
+        Servico salvo = servicoRepository.save(servico);
+        publicar(salvo, idUsuario, salvo.getStatus());
+        return ServicoResponse.criar(salvo);
     }
 
     public ServicoResponse atualizar(Long id, ServicoRequest dados, Long idUsuario) {
@@ -76,12 +83,15 @@ public class ServicoService {
         servico.setDescricao(dados.descricao());
         servico.setValor(dados.valor());
         servico.setStatus(dados.status());
-        return ServicoResponse.criar(servicoRepository.save(servico));
+        Servico salvo = servicoRepository.save(servico);
+        publicar(salvo, idUsuario, salvo.getStatus());
+        return ServicoResponse.criar(salvo);
     }
 
     public void excluir(Long id, Long idUsuario) {
         Servico servico = buscarPorId(id);
         exigirDono(servico, idUsuario);
         servicoRepository.delete(servico);
+        publicar(servico, idUsuario, "REMOVIDO");
     }
 }
