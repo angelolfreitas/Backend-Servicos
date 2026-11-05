@@ -5,16 +5,20 @@ import com.elos.usuario_service.dto.LoginResponse;
 import com.elos.usuario_service.dto.RegisterRequest;
 import com.elos.usuario_service.dto.RegisterResponse;
 import com.elos.usuario_service.repository.UsuarioRepository;
-import com.elos.usuario_service.security.TokenService;
+import com.elos.usuario_service.infra.security.TokenService;
 import com.elos.usuario_service.usuario.Usuario;
 import com.elos.usuario_service.usuario.role.Role;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.lang.reflect.Field;
+import java.time.LocalDate;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 
@@ -26,36 +30,36 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
 
     public Optional<LoginResponse> login(LoginRequest login) {
-        Usuario user = this.userRepository.findByEmail(login.email())
-                .orElseThrow(
-                        ()->new RuntimeException(login.email()
-                        ));
-        if(!passwordEncoder.matches(login.password(), user.getPassword()))
-            throw new RuntimeException();
+        Usuario user = userRepository.findByEmail(normalizar(login.email()))
+                .filter(u -> passwordEncoder.matches(login.password(), u.getPassword()))
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Credenciais inválidas"));
 
         String token = tokenService.generateToken(user);
-
-        return Optional.of(new LoginResponse(login.email(),token, user.getRole().toString()));
+        return Optional.of(new LoginResponse(user.getEmail(), token, user.getRole().toString()));
     }
     public Optional<RegisterResponse> register(RegisterRequest register, Role role) {
-        Optional<Usuario> verifyUser = this.userRepository.findByEmail(register.email());
-        if(verifyUser.isPresent())
-            throw new RuntimeException(register.email());
+        if (userRepository.findByEmail(normalizar(register.email())).isPresent())
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "E-mail já cadastrado");
         return Optional.of(buildUser(register, role));
     }
 
     private RegisterResponse buildUser(RegisterRequest register, Role role) {
         Usuario user = Usuario.builder()
+                .username(register.username().strip())
+                .email(normalizar(register.email()))
                 .password(passwordEncoder.encode(register.password()))
-                .email(register.email())
-                .username(register.username())
+                .telefone(register.telefone())
+                .tipoConta(register.tipoConta())
+                .statusConta("ATIVO")              // o servidor decide, nunca o cliente
+                .dataCadastro(LocalDate.now())
                 .role(role)
                 .build();
 
-        this.userRepository.save(user);
-
-        String token = tokenService.generateToken(user);
-        return new RegisterResponse(user.getUsername(),token);
+        userRepository.save(user);
+        return new RegisterResponse(user.getUsername(), tokenService.generateToken(user));
+    }
+    private String normalizar(String email) {
+        return email.strip().toLowerCase(Locale.ROOT);
     }
 
     public Optional<RegisterResponse> registerManager(RegisterRequest register) {

@@ -31,7 +31,7 @@ public class Usuario implements Serializable, UserDetails {
     @Column(name = "nome")
     private String username;
 
-    @Column(name = "email")
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
 
     @Column(name = "senha")

@@ -5,6 +5,7 @@ import com.elos.usuario_service.dto.LoginResponse;
 import com.elos.usuario_service.dto.RegisterRequest;
 import com.elos.usuario_service.dto.RegisterResponse;
 import com.elos.usuario_service.usuario.role.Role;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,14 +21,14 @@ import java.util.Optional;
 public class AuthenticationController {
     AuthenticationService authenticationService;
     @PostMapping("/sign-up")
-    ResponseEntity<RegisterResponse> signUp(@RequestBody RegisterRequest registerRequest) {
+    ResponseEntity<RegisterResponse> signUp(@Valid @RequestBody RegisterRequest registerRequest) {
         Optional<RegisterResponse> registerResponse = authenticationService.register(registerRequest,
                 Role.USER);
         return registerResponse.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.badRequest().build());
     }
     @PostMapping("/sign-in")
-    ResponseEntity<LoginResponse> signIn(@RequestBody LoginRequest loginRequest) {
+    ResponseEntity<LoginResponse> signIn(@Valid @RequestBody LoginRequest loginRequest) {
         Optional<LoginResponse> loginResponse = authenticationService.login(loginRequest);
         return loginResponse.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.badRequest().build());

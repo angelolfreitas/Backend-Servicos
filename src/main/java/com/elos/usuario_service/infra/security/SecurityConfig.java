@@ -1,4 +1,4 @@
-package com.elos.usuario_service.security;
+package com.elos.usuario_service.infra.security;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +39,7 @@ public class SecurityConfig {
                         SessionCreationPolicy.STATELESS
                 ))
                 .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/error").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/sign-up", "/auth/sign-in").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()

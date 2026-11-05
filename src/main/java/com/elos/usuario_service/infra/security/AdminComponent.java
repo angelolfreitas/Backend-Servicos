@@ -1,4 +1,4 @@
-package com.elos.usuario_service.security;
+package com.elos.usuario_service.infra.security;
 
 import com.elos.usuario_service.AuthenticationService;
 import com.elos.usuario_service.dto.RegisterRequest;
@@ -20,7 +20,7 @@ public class AdminComponent {
        return args -> {
            try {
                authentication.register(
-                       RegisterRequest.noRole("admin", adminEmail, adminPassword, "", "", ""),
+                       new RegisterRequest("admin", adminEmail, adminPassword, null, "ADMIN"),
                        Role.ADMIN
                );
                System.out.println("Admin user initialized successfully.");

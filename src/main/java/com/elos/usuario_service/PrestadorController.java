@@ -4,6 +4,7 @@ import com.elos.usuario_service.dto.CandidaturaRequest;
 import com.elos.usuario_service.dto.DocumentoResponse;
 import com.elos.usuario_service.dto.PrestadorResponse;
 import com.elos.usuario_service.usuario.Usuario;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -40,7 +41,7 @@ public class PrestadorController {
 
     @PostMapping("/candidatura")
     @PreAuthorize("hasAuthority('user::write')")
-    public ResponseEntity<PrestadorResponse> candidatar(@RequestBody CandidaturaRequest req,
+    public ResponseEntity<PrestadorResponse> candidatar(@Valid @RequestBody CandidaturaRequest req,
                                                         @AuthenticationPrincipal Usuario usuario) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(service.candidatar(usuario.getIdUsuario(), req));

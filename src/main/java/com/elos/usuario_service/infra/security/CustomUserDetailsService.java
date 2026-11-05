@@ -1,4 +1,4 @@
-package com.elos.usuario_service.security;
+package com.elos.usuario_service.infra.security;
 
 
 import com.elos.usuario_service.repository.UsuarioRepository;
