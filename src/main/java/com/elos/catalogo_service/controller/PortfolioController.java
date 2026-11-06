@@ -4,6 +4,7 @@ import com.elos.catalogo_service.service.PortfolioService;
 import com.elos.catalogo_service.dto.catalogo.FotoResponse;
 import com.elos.catalogo_service.dto.catalogo.PortfolioRequest;
 import com.elos.catalogo_service.dto.catalogo.PortfolioResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
@@ -25,7 +26,7 @@ public class PortfolioController {
 
     @PutMapping("/meu")
     @PreAuthorize("hasAuthority('user::write')")
-    public ResponseEntity<PortfolioResponse> salvar(@RequestBody PortfolioRequest req,
+    public ResponseEntity<PortfolioResponse> salvar(@Valid @RequestBody PortfolioRequest req,
                                                     @AuthenticationPrincipal Long idUsuario) {
         return ResponseEntity.ok(service.salvar(idUsuario, req));
     }

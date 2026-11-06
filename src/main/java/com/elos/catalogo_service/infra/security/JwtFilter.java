@@ -1,4 +1,4 @@
-package com.elos.catalogo_service.security;
+package com.elos.catalogo_service.infra.security;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;

@@ -1,4 +1,4 @@
-package com.elos.catalogo_service.security;
+package com.elos.catalogo_service.infra.security;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

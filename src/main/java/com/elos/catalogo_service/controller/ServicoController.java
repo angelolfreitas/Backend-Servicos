@@ -4,6 +4,7 @@ package com.elos.catalogo_service.controller;
 import com.elos.catalogo_service.service.ServicoService;
 import com.elos.catalogo_service.dto.catalogo.ServicoRequest;
 import com.elos.catalogo_service.dto.catalogo.ServicoResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,7 +41,7 @@ public class ServicoController {
 
     @PostMapping
     @PreAuthorize("hasAuthority('user::write')")
-    public ResponseEntity<ServicoResponse> criar(@RequestBody ServicoRequest servico,
+    public ResponseEntity<ServicoResponse> criar(@Valid @RequestBody ServicoRequest servico,
                                                  @AuthenticationPrincipal Long idUsuario) {
         return ResponseEntity.status(HttpStatus.CREATED).body(servicoService.criar(servico, idUsuario));
     }
@@ -48,7 +49,7 @@ public class ServicoController {
     @PreAuthorize("hasAuthority('user::write')")
     public ResponseEntity<ServicoResponse> atualizar(
             @PathVariable Long id,
-            @RequestBody ServicoRequest servico,
+            @Valid @RequestBody ServicoRequest servico,
             @AuthenticationPrincipal Long idUsuario
     ) {
         return ResponseEntity.ok(servicoService.atualizar(id, servico, idUsuario));
