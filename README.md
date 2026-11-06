@@ -11,6 +11,6 @@ depois de um tempo, a api vai estar funcionando e voce pode testar cocm postman 
 para encerrar os processos e apagar tudo, rode o seguinte comando:
 
 docker compose pull
-docker compose up -d
+docker compose down -d
 
 as variavies estao expostas, mas depois resolvemos isso.

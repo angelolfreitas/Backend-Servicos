@@ -1,3 +1,15 @@
+x-servico: &servico
+  restart: on-failure
+  depends_on:
+    db: { condition: service_healthy }
+    kafka: { condition: service_started }
+
+x-comum: &comum
+  SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+  SPRING_DATASOURCE_USERNAME: root
+  SPRING_DATASOURCE_PASSWORD: "12345678"
+  API_SECURITY_TOKEN_SECRET: ${JWT_SECRET:-123}
+
 services:
   db:
     image: mysql:8
@@ -26,45 +38,91 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
 
-  usuario-service:
-    image: angelofr/elos-usuario-service
-    ports:
-      - "8081:8081"
+  gateway-service:
+    image: angelofr/gateway-service
+    ports: ["8080:8080"]
+    restart: on-failure
+    depends_on:
+      kafka: { condition: service_started }
     environment:
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      API_SECURITY_TOKEN_SECRET: ${JWT_SECRET:-123}
+      USUARIO_URL: http://usuario-service:8081
+      CATALOGO_URL: http://catalogo-service:8092
+      NEGOCIACAO_URL: http://negociacao-service:8083
+      COMUNICACAO_URL: http://comunicacao-service:8084
+      REPUTACAO_URL: http://reputacao-service:8085
+      SUPORTE_URL: http://suporte-service:8086
+      FINANCEIRO_URL: http://financeiro-service:8087
+      DASHBOARD_URL: http://dashboard-service:8088
+
+  usuario-service:
+    <<: *servico
+    image: angelofr/usuario-service
+    ports: ["8081:8081"]
+    environment:
+      <<: *comum
       SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/usuario_db?createDatabaseIfNotExist=true
     volumes:
       - uploads_usuario:/app/uploads
-    depends_on:
-      db: { condition: service_healthy }
-      kafka: { condition: service_started }
-    restart: on-failure
 
   catalogo-service:
-    image: angelofr/elos-catalogo-service
-    ports:
-      - "8082:8082"
+    <<: *servico
+    image: angelofr/catalogo-service
+    ports: ["8092:8092"]
     environment:
-      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      <<: *comum
       SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/catalogo_db?createDatabaseIfNotExist=true
     volumes:
       - uploads_catalogo:/app/uploads
-    depends_on:
-      db: { condition: service_healthy }
-      kafka: { condition: service_started }
-    restart: on-failure
 
   negociacao-service:
-    image: angelofr/elos-negociacao-service
-    ports:
-      - "8083:8083"
+    <<: *servico
+    image: angelofr/negociacao-service
+    ports: ["8083:8083"]
     environment:
-      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      <<: *comum
       SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/negociacao_db?createDatabaseIfNotExist=true
-    depends_on:
-      db: { condition: service_healthy }
-      kafka: { condition: service_started }
-    restart: on-failure
+
+  comunicacao-service:
+    <<: *servico
+    image: angelofr/comunicacao-service
+    ports: ["8084:8084"]
+    environment:
+      <<: *comum
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/comunicacao_db?createDatabaseIfNotExist=true
+
+  reputacao-service:
+    <<: *servico
+    image: angelofr/reputacao-service
+    ports: ["8085:8085"]
+    environment:
+      <<: *comum
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/reputacao_db?createDatabaseIfNotExist=true
+
+  suporte-service:
+    <<: *servico
+    image: angelofr/suporte-service
+    ports: ["8086:8086"]
+    environment:
+      <<: *comum
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/suporte_db?createDatabaseIfNotExist=true
+
+  financeiro-service:
+    <<: *servico
+    image: angelofr/financeiro-service
+    ports: ["8087:8087"]
+    environment:
+      <<: *comum
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/financeiro_db?createDatabaseIfNotExist=true
+
+  dashboard-service:
+    <<: *servico
+    image: angelofr/dashboard-service
+    ports: ["8088:8088"]
+    environment:
+      <<: *comum
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/dashboard_db?createDatabaseIfNotExist=true
 
 volumes:
   dbdata:
