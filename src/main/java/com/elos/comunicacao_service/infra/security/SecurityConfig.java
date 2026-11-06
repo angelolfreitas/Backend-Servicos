@@ -1,4 +1,4 @@
-package com.elos.comunicacao_service.security;
+package com.elos.comunicacao_service.infra.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

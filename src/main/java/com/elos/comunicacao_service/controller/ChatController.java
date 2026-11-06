@@ -3,6 +3,7 @@ package com.elos.comunicacao_service.controller;
 import com.elos.comunicacao_service.service.ChatService;
 import com.elos.comunicacao_service.dto.MensagemRequest;
 import com.elos.comunicacao_service.dto.MensagemResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
@@ -32,7 +33,8 @@ public class ChatController {
 
     @PostMapping("/chats/{id}/mensagens")
     @PreAuthorize("hasAuthority('user::write')")
-    public ResponseEntity<MensagemResponse> enviar(@PathVariable Long id, @RequestBody MensagemRequest req,
+    public ResponseEntity<MensagemResponse> enviar(@PathVariable Long id,
+                                                   @Valid @RequestBody MensagemRequest req,
                                                    @AuthenticationPrincipal Long idUsuario) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.enviarTexto(id, idUsuario, req.texto()));
     }

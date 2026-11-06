@@ -3,7 +3,7 @@ package com.elos.comunicacao_service;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.elos.comunicacao_service.security.Role;
+import com.elos.comunicacao_service.infra.security.Role;
 import com.elos.comunicacao_service.service.ChatService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
