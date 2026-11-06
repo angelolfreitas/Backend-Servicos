@@ -39,7 +39,7 @@ services:
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
 
   gateway-service:
-    image: angelofr/gateway-service
+    image: angelofr/api-gateway
     ports: ["8080:8080"]
     restart: on-failure
     depends_on:
