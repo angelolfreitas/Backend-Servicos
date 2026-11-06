@@ -13,7 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class ContaListener {
     private final UsuarioRepository usuarios;
 
-    @KafkaListener(topics = "conta-moderada", groupId = "usuario")
+    @KafkaListener(topics = "conta-moderada", groupId = "usuario",
+            properties = "spring.json.value.default.type=com.elos.usuario_service.dto.ContaModerada")
     @Transactional
     public void ouvir(ContaModerada e) {
         usuarios.findById(e.idUsuario()).ifPresent(u -> {

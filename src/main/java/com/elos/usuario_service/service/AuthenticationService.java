@@ -45,7 +45,7 @@ public class AuthenticationService {
                 .password(passwordEncoder.encode(register.password()))
                 .telefone(register.telefone())
                 .tipoConta(register.tipoConta())
-                .statusConta("ATIVO")              // o servidor decide, nunca o cliente
+                .statusConta("ATIVO")
                 .dataCadastro(LocalDate.now())
                 .role(role)
                 .build();
