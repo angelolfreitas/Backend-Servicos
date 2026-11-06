@@ -1,0 +1,69 @@
+spring:
+  application:
+    name: api-gateway
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      auto-offset-reset: earliest
+      value-deserializer: org.springframework.kafka.support.serializer.JacksonJsonDeserializer
+      properties:
+        spring.json.trusted.packages: com.elos.api_gateway.dto
+  cloud:
+    gateway:
+      server:
+        webflux:
+          globalcors:
+            cors-configuration:
+              '[/**]':
+                allowedOrigins:
+                  - "http://localhost:5173"
+                  - "http://localhost:3000"
+                allowedMethods: [GET, POST, PUT, PATCH, DELETE, OPTIONS]
+                allowedHeaders: "*"
+                maxAge: 3600
+          default-filters:
+            - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials, RETAIN_FIRST
+          routes:
+            - id: usuario
+              uri: ${USUARIO_URL:http://localhost:8081}
+              predicates:
+                - Path=/auth/**,/prestadores/**,/admin/prestadores/**,/admin/documentos/**
+            - id: catalogo
+              uri: ${CATALOGO_URL:http://localhost:8092}
+              predicates:
+                - Path=/vitrine/**,/servicos/**,/categorias/**,/portfolio/**,/admin/categorias/**
+            - id: negociacao
+              uri: ${NEGOCIACAO_URL:http://localhost:8083}
+              predicates:
+                - Path=/propostas/**,/contratacoes/**
+            - id: comunicacao
+              uri: ${COMUNICACAO_URL:http://localhost:8084}
+              predicates:
+                - Path=/chats/**,/admin/chats/**
+            - id: reputacao
+              uri: ${REPUTACAO_URL:http://localhost:8085}
+              predicates:
+                - Path=/avaliacoes/**,/reputacao/**,/admin/avaliacoes/**
+            - id: suporte
+              uri: ${SUPORTE_URL:http://localhost:8086}
+              predicates:
+                - Path=/tickets/**,/admin/tickets/**,/admin/moderacoes/**
+            - id: financeiro
+              uri: ${FINANCEIRO_URL:http://localhost:8087}
+              predicates:
+                - Path=/pagamentos/**
+            - id: dashboard
+              uri: ${DASHBOARD_URL:http://localhost:8088}
+              predicates:
+                - Path=/dashboard/**
+
+server:
+  port: 8080
+
+api:
+  security:
+    token:
+      secret: "123"
+
+gateway:
+  rotas-publicas: POST /auth/sign-in,POST /auth/sign-up,GET /actuator/health
