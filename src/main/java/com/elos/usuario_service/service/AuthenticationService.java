@@ -21,6 +21,7 @@ import java.time.LocalDate;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 @RequiredArgsConstructor
 @Service
@@ -29,17 +30,8 @@ public class AuthenticationService {
     private final TokenService tokenService;
     private final PasswordEncoder passwordEncoder;
 
-    public Optional<LoginResponse> login(LoginRequest login) {
-        Usuario user = userRepository.findByEmail(normalizar(login.email()))
-                .filter(u -> passwordEncoder.matches(login.password(), u.getPassword()))
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Credenciais inválidas"));
+    private static final Set<String> CAMPOS_EDITAVEIS = Set.of("username", "telefone");
 
-        if (user.estaBloqueado())
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Conta suspensa ou banida");
-
-        String token = tokenService.generateToken(user);
-        return Optional.of(new LoginResponse(user.getEmail(), token, user.getRole().toString()));
-    }
     public Optional<RegisterResponse> register(RegisterRequest register, Role role) {
         if (userRepository.findByEmail(normalizar(register.email())).isPresent())
             throw new ResponseStatusException(HttpStatus.CONFLICT, "E-mail já cadastrado");
@@ -65,22 +57,6 @@ public class AuthenticationService {
         return email.strip().toLowerCase(Locale.ROOT);
     }
 
-    public Optional<RegisterResponse> registerManager(RegisterRequest register) {
-        Optional<Usuario> verifyUser = this.userRepository.findByEmail(register.email());
-        //usuario inexistente, criado como manager
-        if(verifyUser.isEmpty())
-            return Optional.of(buildUser(register, Role.MANAGER));
-        //usuário existente, atualiza a role
-        Usuario user = verifyUser.get();
-        //retorna nada se o usuário já é manager
-        if(!updateRole(user, Role.MANAGER))
-            throw new RuntimeException(register.username());
-
-
-        String newToken = tokenService.generateToken(user);
-        return Optional.of(new RegisterResponse(user.getUsername(), newToken));
-    }
-
     public boolean updateRole(Usuario user, Role newRole) {
         if (user.getRole() == newRole)
             return false;
@@ -91,24 +67,56 @@ public class AuthenticationService {
     }
 
 
+    public Optional<LoginResponse> login(LoginRequest login) {
+        Usuario user = userRepository.findByEmail(normalizar(login.email()))
+                .filter(u -> passwordEncoder.matches(login.password(), u.getPassword()))
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Credenciais inválidas"));
+
+        if (user.estaBloqueado())
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Conta suspensa ou banida");
+
+        String token = tokenService.generateToken(user);
+        return Optional.of(new LoginResponse(user.getEmail(), token, user.getRole().toString()));
+    }
+
+    public Optional<RegisterResponse> registerManager(RegisterRequest register) {
+        String email = normalizar(register.email());
+        Optional<Usuario> existente = userRepository.findByEmail(email);
+        if (existente.isEmpty())
+            return Optional.of(buildUser(register, Role.MANAGER));
+
+        Usuario user = existente.get();
+        if (!updateRole(user, Role.MANAGER))
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Usuário já é manager");
+        return Optional.of(new RegisterResponse(user.getUsername(), tokenService.generateToken(user)));
+    }
+
     @Transactional
     public RegisterResponse updateUsuario(RegisterRequest update, Usuario user) {
-        user.setEmail(update.email());
-        user.setPassword(passwordEncoder.encode(update.password()));
-        user.setUsername(update.username());
+        String email = normalizar(update.email());
+        if (!email.equals(user.getEmail()) && userRepository.findByEmail(email).isPresent())
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "E-mail já cadastrado");
 
-        this.userRepository.save(user);
-        String newToken = tokenService.generateToken(user);
-        return new RegisterResponse(user.getUsername(), newToken);
+        user.setEmail(email);
+        user.setPassword(passwordEncoder.encode(update.password()));
+        user.setUsername(update.username().strip());
+        userRepository.save(user);
+        return new RegisterResponse(user.getUsername(), tokenService.generateToken(user));
     }
+
     @Transactional
     public void patchUser(Usuario user, Map<String, Object> updates) {
-        updates.forEach((key, value) -> {
-            Field field = ReflectionUtils.findField(Usuario.class, key);
-            field.setAccessible(true);
-            ReflectionUtils.setField(field, user, value);
+        updates.forEach((campo, valor) -> {
+            if (!CAMPOS_EDITAVEIS.contains(campo))
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Campo não editável: " + campo);
+            if (!(valor instanceof String texto) || texto.isBlank())
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Valor inválido para " + campo);
+            switch (campo) {
+                case "username" -> user.setUsername(texto.strip());
+                case "telefone" -> user.setTelefone(texto.strip());
+            }
         });
-        this.userRepository.save(user);
+        userRepository.save(user);
     }
 
 }
