@@ -1,4 +1,4 @@
-package com.elos.usuario_service;
+package com.elos.usuario_service.service;
 
 import com.elos.usuario_service.dto.LoginRequest;
 import com.elos.usuario_service.dto.LoginResponse;

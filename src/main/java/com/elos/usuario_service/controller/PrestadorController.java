@@ -1,5 +1,7 @@
-package com.elos.usuario_service;
+package com.elos.usuario_service.controller;
 
+import com.elos.usuario_service.service.DocumentoService;
+import com.elos.usuario_service.service.PrestadorService;
 import com.elos.usuario_service.dto.CandidaturaRequest;
 import com.elos.usuario_service.dto.DocumentoResponse;
 import com.elos.usuario_service.dto.PrestadorResponse;

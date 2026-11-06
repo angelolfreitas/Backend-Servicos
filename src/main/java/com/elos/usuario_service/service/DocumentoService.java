@@ -1,4 +1,4 @@
-package com.elos.usuario_service;
+package com.elos.usuario_service.service;
 
 import com.elos.usuario_service.dto.DocumentoResponse;
 import com.elos.usuario_service.repository.DocumentoRepository;

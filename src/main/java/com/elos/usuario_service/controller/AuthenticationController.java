@@ -1,5 +1,6 @@
-package com.elos.usuario_service;
+package com.elos.usuario_service.controller;
 
+import com.elos.usuario_service.service.AuthenticationService;
 import com.elos.usuario_service.dto.LoginRequest;
 import com.elos.usuario_service.dto.LoginResponse;
 import com.elos.usuario_service.dto.RegisterRequest;

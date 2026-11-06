@@ -1,5 +1,6 @@
-package com.elos.usuario_service;
+package com.elos.usuario_service.controller;
 
+import com.elos.usuario_service.service.DocumentoService;
 import com.elos.usuario_service.dto.DocumentoResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;

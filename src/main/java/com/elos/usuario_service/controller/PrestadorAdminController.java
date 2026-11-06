@@ -1,5 +1,6 @@
-package com.elos.usuario_service;
+package com.elos.usuario_service.controller;
 
+import com.elos.usuario_service.service.PrestadorService;
 import com.elos.usuario_service.dto.PrestadorResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

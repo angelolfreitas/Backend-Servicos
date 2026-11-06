@@ -1,6 +1,6 @@
 package com.elos.usuario_service.infra.security;
 
-import com.elos.usuario_service.AuthenticationService;
+import com.elos.usuario_service.service.AuthenticationService;
 import com.elos.usuario_service.dto.RegisterRequest;
 import com.elos.usuario_service.usuario.role.Role;
 import org.springframework.beans.factory.annotation.Value;
