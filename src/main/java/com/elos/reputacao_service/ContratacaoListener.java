@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 public class ContratacaoListener {
     private final ContratacaoRefRepository repository;
 
-    @KafkaListener(topics = "contratacao-atualizada", groupId = "comunicacao")
+    @KafkaListener(topics = "contratacao-atualizada", groupId = "reputacao")
     public void ouvir(ContratacaoAtualizada e) {
         repository.save(new ContratacaoRef(e.idContratacao(), e.idCliente(), e.idPrestador(), e.status()));
     }
