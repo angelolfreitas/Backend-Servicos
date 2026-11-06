@@ -12,6 +12,7 @@ import com.elos.negociacao_service.repository.ContratacaoRepository;
 import com.elos.negociacao_service.repository.PropostaRepository;
 import com.elos.negociacao_service.repository.ServicoRefRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,8 @@ public class NegociacaoService {
     private final ContratacaoRepository contratacoes;
     private final ServicoRefRepository servicos;
     private final ApplicationEventPublisher events;
+    @Value("${app.pagamento.obrigatorio:true}")
+    private boolean pagamentoObrigatorio;
 
     @Transactional
     public ContratacaoResponse propor(Long idCliente, PropostaRequest req) {
@@ -78,6 +81,8 @@ public class NegociacaoService {
         c.setStatus(StatusContratacao.EM_EXECUCAO.name());
         c.setDataInicio(inicio);
         c.setDataFinalizacaoPrevista(req.dataFinalizacaoPrevista());
+        c.setStatus((pagamentoObrigatorio ? StatusContratacao.AGUARDANDO_PAGAMENTO
+                : StatusContratacao.EM_EXECUCAO).name());
         propostas.save(p);
         contratacoes.save(c);
         publicar(c);
@@ -106,7 +111,7 @@ public class NegociacaoService {
                 && !StatusContratacao.EM_EXECUCAO.name().equals(c.getStatus()))
             throw erro(HttpStatus.CONFLICT, "Contratação não pode mais ser cancelada");
         Proposta p = proposta(c);
-        if ("PENDENTE".equals(p.getStatus())) {
+        if ("PENDENTE".equals(p.getStatus()) || "AGUARDANDO_PAGAMENTO".equals(p.getStatus())) {
             p.setStatus("CANCELADA");
             propostas.save(p);
         }
@@ -163,7 +168,7 @@ public class NegociacaoService {
     }
     private void publicar(Contratacao c) {
         events.publishEvent(new ContratacaoAtualizada(c.getIdContratacao(), c.getIdCliente(),
-                c.getIdPrestador(), c.getIdServico(), c.getStatus()));
+                c.getIdPrestador(), c.getIdServico(), c.getStatus(), proposta(c).getValor()));
     }
     private RuntimeException erro(HttpStatus status, String msg) {
         return new ResponseStatusException(status, msg);
@@ -172,5 +177,14 @@ public class NegociacaoService {
         return new ContratacaoResponse(c.getIdContratacao(), c.getIdCliente(), c.getIdPrestador(),
                 c.getIdServico(), c.getIdProposta(), p.getValor(), p.getDescricao(),
                 c.getDataInicio(), c.getDataFinalizacaoPrevista(), c.getDataFinalizacao(), c.getStatus());
+    }
+
+    @Transactional
+    public void iniciarExecucao(Long idContratacao) {
+        Contratacao c = contratacoes.findById(idContratacao).orElse(null);
+        if (c == null || !"AGUARDANDO_PAGAMENTO".equals(c.getStatus())) return;   // idempotente
+        c.setStatus(StatusContratacao.EM_EXECUCAO.name());
+        contratacoes.save(c);
+        publicar(c);
     }
 }
