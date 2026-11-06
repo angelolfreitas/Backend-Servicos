@@ -57,5 +57,9 @@ public class Usuario implements Serializable, UserDetails {
         return role.getAuthorities();
     }
 
+    public boolean estaBloqueado() {
+        return "SUSPENSO".equals(statusConta) || "BANIDO".equals(statusConta);
+    }
+
 
 }

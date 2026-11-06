@@ -34,6 +34,9 @@ public class AuthenticationService {
                 .filter(u -> passwordEncoder.matches(login.password(), u.getPassword()))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Credenciais inválidas"));
 
+        if (user.estaBloqueado())
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Conta suspensa ou banida");
+
         String token = tokenService.generateToken(user);
         return Optional.of(new LoginResponse(user.getEmail(), token, user.getRole().toString()));
     }

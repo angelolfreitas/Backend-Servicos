@@ -50,6 +50,11 @@ public class SecurityFilter extends OncePerRequestFilter {
             return;
         }
         Usuario user = optionalUser.get();
+
+        if (user.estaBloqueado()) {
+            filterChain.doFilter(request, response);
+            return;
+        }
         var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
