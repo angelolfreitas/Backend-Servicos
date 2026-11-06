@@ -56,17 +56,4 @@ public class AvaliacaoController {
         return ResponseEntity.ok(service.recentes());
     }
 
-    @PatchMapping("/admin/avaliacoes/{id}/ocultar")
-    @PreAuthorize("hasAuthority('admin::manage')")
-    public ResponseEntity<Void> ocultar(@PathVariable Long id, @AuthenticationPrincipal Long idAdmin) {
-        service.moderar(id, idAdmin, true);
-        return ResponseEntity.noContent().build();
-    }
-
-    @PatchMapping("/admin/avaliacoes/{id}/exibir")
-    @PreAuthorize("hasAuthority('admin::manage')")
-    public ResponseEntity<Void> exibir(@PathVariable Long id, @AuthenticationPrincipal Long idAdmin) {
-        service.moderar(id, idAdmin, false);
-        return ResponseEntity.noContent().build();
-    }
 }
