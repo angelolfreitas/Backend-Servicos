@@ -1,5 +1,6 @@
-package com.elos.negociacao_service;
+package com.elos.negociacao_service.controller;
 
+import com.elos.negociacao_service.service.NegociacaoService;
 import com.elos.negociacao_service.dto.AceiteRequest;
 import com.elos.negociacao_service.dto.ContratacaoResponse;
 import com.elos.negociacao_service.dto.PropostaRequest;

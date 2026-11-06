@@ -1,4 +1,4 @@
-package com.elos.negociacao_service;
+package com.elos.negociacao_service.service;
 
 import com.elos.negociacao_service.dto.AceiteRequest;
 import com.elos.negociacao_service.dto.ContratacaoAtualizada;
