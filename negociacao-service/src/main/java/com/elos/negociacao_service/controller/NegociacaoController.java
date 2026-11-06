@@ -4,6 +4,7 @@ import com.elos.negociacao_service.service.NegociacaoService;
 import com.elos.negociacao_service.dto.AceiteRequest;
 import com.elos.negociacao_service.dto.ContratacaoResponse;
 import com.elos.negociacao_service.dto.PropostaRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +21,7 @@ public class NegociacaoController {
 
     @PostMapping("/propostas")
     @PreAuthorize("hasAuthority('user::write')")
-    public ResponseEntity<ContratacaoResponse> propor(@RequestBody PropostaRequest req,
+    public ResponseEntity<ContratacaoResponse> propor(@Valid @RequestBody PropostaRequest req,
                                                       @AuthenticationPrincipal Long idUsuario) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.propor(idUsuario, req));
     }
@@ -40,7 +41,8 @@ public class NegociacaoController {
 
     @PostMapping("/contratacoes/{id}/aceitar")
     @PreAuthorize("hasAuthority('user::write')")
-    public ResponseEntity<ContratacaoResponse> aceitar(@PathVariable Long id, @RequestBody AceiteRequest req,
+    public ResponseEntity<ContratacaoResponse> aceitar(@PathVariable Long id,
+                                                       @Valid @RequestBody AceiteRequest req,
                                                        @AuthenticationPrincipal Long idUsuario) {
         return ResponseEntity.ok(service.aceitar(id, idUsuario, req));
     }

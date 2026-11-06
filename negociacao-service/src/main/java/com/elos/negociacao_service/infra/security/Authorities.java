@@ -1,4 +1,4 @@
-package com.elos.negociacao_service.security;
+package com.elos.negociacao_service.infra.security;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
