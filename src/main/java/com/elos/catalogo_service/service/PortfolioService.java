@@ -1,4 +1,4 @@
-package com.elos.catalogo_service;
+package com.elos.catalogo_service.service;
 
 import com.elos.catalogo_service.catalogo.FotoPortfolio;
 import com.elos.catalogo_service.catalogo.Portfolio;

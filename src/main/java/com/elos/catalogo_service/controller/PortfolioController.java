@@ -1,5 +1,6 @@
-package com.elos.catalogo_service;
+package com.elos.catalogo_service.controller;
 
+import com.elos.catalogo_service.service.PortfolioService;
 import com.elos.catalogo_service.dto.catalogo.FotoResponse;
 import com.elos.catalogo_service.dto.catalogo.PortfolioRequest;
 import com.elos.catalogo_service.dto.catalogo.PortfolioResponse;

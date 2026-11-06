@@ -1,7 +1,8 @@
-package com.elos.catalogo_service;
+package com.elos.catalogo_service.service;
 
 
 
+import com.elos.catalogo_service.EventPublisher;
 import com.elos.catalogo_service.catalogo.Servico;
 import com.elos.catalogo_service.dto.catalogo.ServicoAtualizado;
 import com.elos.catalogo_service.dto.catalogo.ServicoRequest;

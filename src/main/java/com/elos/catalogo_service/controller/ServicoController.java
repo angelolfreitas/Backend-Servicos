@@ -1,6 +1,7 @@
-package com.elos.catalogo_service;
+package com.elos.catalogo_service.controller;
 
 
+import com.elos.catalogo_service.service.ServicoService;
 import com.elos.catalogo_service.dto.catalogo.ServicoRequest;
 import com.elos.catalogo_service.dto.catalogo.ServicoResponse;
 import lombok.RequiredArgsConstructor;

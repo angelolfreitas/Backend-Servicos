@@ -1,5 +1,6 @@
-package com.elos.catalogo_service;
+package com.elos.catalogo_service.controller;
 
+import com.elos.catalogo_service.service.CategoriaService;
 import com.elos.catalogo_service.dto.catalogo.CategoriaResponse;
 import com.elos.catalogo_service.dto.catalogo.TipoServicoResponse;
 import lombok.RequiredArgsConstructor;
