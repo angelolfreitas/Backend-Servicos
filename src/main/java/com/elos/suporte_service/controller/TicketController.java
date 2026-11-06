@@ -46,4 +46,5 @@ public class TicketController {
                                                     @AuthenticationPrincipal Long idUsuario) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.responderUsuario(id, idUsuario, req.mensagem()));
     }
+
 }

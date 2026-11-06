@@ -1,6 +1,8 @@
 package com.elos.suporte_service.service;
 
+import com.elos.suporte_service.EventPublisher;
 import com.elos.suporte_service.dto.MensagemTicketResponse;
+import com.elos.suporte_service.dto.TicketAtualizado;
 import com.elos.suporte_service.dto.TicketRequest;
 import com.elos.suporte_service.dto.TicketResponse;
 import com.elos.suporte_service.repository.MensagemTicketRepository;
@@ -8,6 +10,7 @@ import com.elos.suporte_service.repository.TicketRepository;
 import com.elos.suporte_service.suporte.MensagemTicket;
 import com.elos.suporte_service.suporte.Ticket;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,20 +28,63 @@ public class TicketService {
 
     private final TicketRepository tickets;
     private final MensagemTicketRepository mensagens;
+    private final ApplicationEventPublisher events;
 
     @Transactional
-    public TicketResponse abrir(Long idUsuario, TicketRequest req) {
+    public TicketResponse criar(Long idUsuario, TicketRequest req) {
         Ticket t = new Ticket();
         t.setIdUsuario(idUsuario);
         t.setCategoriaProblema(req.categoriaProblema());
         t.setIdContratacao(req.idContratacao());
         t.setStatus("ABERTO");
         t.setDataAbertura(LocalDateTime.now());
-        tickets.save(t);
+        t = tickets.save(t);
         t.setProtocolo("ELOS-%d-%06d".formatted(t.getDataAbertura().getYear(), t.getIdTicket()));
+        t = tickets.save(t);
         adicionar(t, idUsuario, req.mensagem());
+        publicar(t);
         return detalhe(t);
     }
+
+    @Transactional
+    public TicketResponse responderAdmin(Long id, Long idAdmin, String texto) {
+        Ticket t = buscar(id);
+        exigirAberto(t);
+        if (t.getIdAdministrador() == null) t.setIdAdministrador(idAdmin);
+        t.setStatus("EM_ATENDIMENTO");
+        tickets.save(t);
+        adicionar(t, idAdmin, texto);
+        publicar(t);
+        return detalhe(t);
+    }
+
+    @Transactional
+    public TicketResponse encerrar(Long id, Long idAdmin) {
+        Ticket t = buscar(id);
+        exigirAberto(t);
+        if (t.getIdAdministrador() == null) t.setIdAdministrador(idAdmin);
+        t.setStatus("ENCERRADO");
+        t.setDataFechamento(LocalDateTime.now());
+        tickets.save(t);
+        publicar(t);
+        return detalhe(t);
+    }
+
+    private void adicionar(Ticket t, Long idRemetente, String texto) {
+        MensagemTicket m = new MensagemTicket();
+        m.setIdTicket(t.getIdTicket());
+        m.setIdUsuarioRemetente(idRemetente);
+        m.setMensagem(texto);
+        m.setDataHora(LocalDateTime.now());
+        mensagens.save(m);
+    }
+
+    private void publicar(Ticket t) {
+        events.publishEvent(new TicketAtualizado(t.getIdTicket(), t.getStatus()));
+    }
+
+
+
 
     public List<TicketResponse> meus(Long idUsuario) {
         return tickets.findByIdUsuarioOrderByIdTicketDesc(idUsuario).stream().map(this::resumo).toList();
@@ -68,35 +114,9 @@ public class TicketService {
         return detalhe(buscar(id));
     }
 
-    @Transactional
-    public TicketResponse responderAdmin(Long id, Long idAdmin, String texto) {
-        Ticket t = buscar(id);
-        exigirAberto(t);
-        if (t.getIdAdministrador() == null) t.setIdAdministrador(idAdmin);
-        t.setStatus("EM_ATENDIMENTO");
-        adicionar(t, idAdmin, texto);
-        return detalhe(t);
-    }
 
-    @Transactional
-    public TicketResponse encerrar(Long id, Long idAdmin) {
-        Ticket t = buscar(id);
-        exigirAberto(t);
-        if (t.getIdAdministrador() == null) t.setIdAdministrador(idAdmin);
-        t.setStatus("ENCERRADO");
-        t.setDataFechamento(LocalDateTime.now());
-        return detalhe(t);
-    }
 
-    // ---- auxiliares ----
-    private void adicionar(Ticket t, Long idRemetente, String texto) {
-        MensagemTicket m = new MensagemTicket();
-        m.setIdTicket(t.getIdTicket());
-        m.setIdUsuarioRemetente(idRemetente);
-        m.setMensagem(texto.strip());
-        m.setDataHora(LocalDateTime.now());
-        mensagens.save(m);
-    }
+
 
     private Ticket buscar(Long id) {
         return tickets.findById(id).orElseThrow(() -> erro(HttpStatus.NOT_FOUND, "Ticket não encontrado"));
@@ -135,5 +155,21 @@ public class TicketService {
 
     private ResponseStatusException erro(HttpStatus s, String msg) {
         return new ResponseStatusException(s, msg);
+    }
+
+    @Transactional
+    public TicketResponse abrir(Long idUsuario, TicketRequest req) {
+        Ticket t = new Ticket();
+        t.setIdUsuario(idUsuario);
+        t.setCategoriaProblema(req.categoriaProblema());
+        t.setIdContratacao(req.idContratacao());
+        t.setStatus("ABERTO");
+        t.setDataAbertura(LocalDateTime.now());
+        t = tickets.save(t);
+        t.setProtocolo("ELOS-%d-%06d".formatted(t.getDataAbertura().getYear(), t.getIdTicket()));
+        t = tickets.save(t);
+        adicionar(t, idUsuario, req.mensagem());
+        publicar(t);
+        return detalhe(t);
     }
 }
