@@ -1,10 +1,8 @@
 package com.elos.usuario_service.controller;
 
+import com.elos.usuario_service.dto.*;
 import com.elos.usuario_service.service.AuthenticationService;
-import com.elos.usuario_service.dto.LoginRequest;
-import com.elos.usuario_service.dto.LoginResponse;
-import com.elos.usuario_service.dto.RegisterRequest;
-import com.elos.usuario_service.dto.RegisterResponse;
+import com.elos.usuario_service.service.PasswordResetService;
 import com.elos.usuario_service.usuario.role.Role;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -21,6 +19,19 @@ import java.util.Optional;
 @AllArgsConstructor
 public class AuthenticationController {
     AuthenticationService authenticationService;
+    private final PasswordResetService passwordResetService; // @AllArgsConstructor injeta
+
+    @PostMapping("/forgot-password")
+    ResponseEntity<Void> forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
+        passwordResetService.solicitar(request.email());
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/reset-password")
+    ResponseEntity<Void> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
+        passwordResetService.redefinir(request.token(), request.password());
+        return ResponseEntity.noContent().build();
+    }
     @PostMapping("/sign-up")
     ResponseEntity<RegisterResponse> signUp(@Valid @RequestBody RegisterRequest registerRequest) {
         Optional<RegisterResponse> registerResponse = authenticationService.register(registerRequest,
