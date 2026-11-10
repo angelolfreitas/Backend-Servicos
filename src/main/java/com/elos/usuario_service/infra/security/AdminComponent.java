@@ -2,12 +2,14 @@ package com.elos.usuario_service.infra.security;
 
 import com.elos.usuario_service.service.AuthenticationService;
 import com.elos.usuario_service.dto.RegisterRequest;
+import com.elos.usuario_service.usuario.estado.TipoConta;
 import com.elos.usuario_service.usuario.role.Role;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
+/// Criacao do usuário de admin pelo spring. Pode ser alterado para um código SQL.
+/// Credenciais nas variavies de ambiente.
 @Configuration
 public class AdminComponent {
     @Value("${spring.security.user.name}")
@@ -20,7 +22,7 @@ public class AdminComponent {
        return args -> {
            try {
                authentication.register(
-                       new RegisterRequest("admin", adminEmail, adminPassword, null, "ADMIN"),
+                       new RegisterRequest("admin", adminEmail, adminPassword, null, TipoConta.EXECUTIVA),
                        Role.ADMIN
                );
                System.out.println("Admin user initialized successfully.");

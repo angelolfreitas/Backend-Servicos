@@ -5,7 +5,10 @@ import com.elos.usuario_service.repository.DocumentoRepository;
 import com.elos.usuario_service.repository.PrestadorRepository;
 import com.elos.usuario_service.usuario.Documento;
 import com.elos.usuario_service.usuario.Prestador;
+import com.elos.usuario_service.usuario.estado.StatusAnalise;
+import com.elos.usuario_service.usuario.estado.TipoDocumento;
 import lombok.RequiredArgsConstructor;
+import org.apache.kafka.common.metrics.Stat;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
@@ -22,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-
+///
 @Service
 @RequiredArgsConstructor
 public class DocumentoService {
@@ -40,7 +43,7 @@ public class DocumentoService {
     public DocumentoResponse enviar(Long idUsuario, String tipo, MultipartFile arquivo) throws IOException {
         Prestador p = prestadores.findByIdUsuario(idUsuario)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Envie a candidatura primeiro"));
-        if (!"PENDENTE".equals(p.getStatusAprovacao()))
+        if (!StatusAnalise.PENDENTE.equals(p.getStatusAprovacao()))
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Candidatura não está em análise");
         if (!TIPOS.contains(tipo))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Tipo inválido. Use " + TIPOS);
@@ -55,10 +58,10 @@ public class DocumentoService {
 
         Documento d = new Documento();
         d.setIdPrestador(p.getIdPrestador());
-        d.setTipoDocumento(tipo);
+        d.setTipoDocumento(TipoDocumento.valueOf(tipo.toUpperCase()));
         d.setAnexo(destino.getFileName().toString());
         d.setDataEnvio(LocalDate.now());
-        d.setStatusAnalise("PENDENTE");
+        d.setStatusAnalise(StatusAnalise.PENDENTE);
         return DocumentoResponse.criar(documentos.save(d));
     }
 
@@ -72,8 +75,8 @@ public class DocumentoService {
         return documentos.findByIdPrestador(idPrestador).stream().map(DocumentoResponse::criar).toList();
     }
 
-    public DocumentoResponse analisar(Long idDocumento, String status) {
-        if (!"APROVADO".equals(status) && !"REJEITADO".equals(status))
+    public DocumentoResponse analisar(Long idDocumento, StatusAnalise status) {
+        if (status.equals(StatusAnalise.PENDENTE))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "status deve ser APROVADO ou REJEITADO");
         Documento d = buscar(idDocumento);
         d.setStatusAnalise(status);

@@ -8,7 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
-
+/// Implementacao da classe user details para passar as credenciais do usuario específicas do nosso siarwm.
 @Component
 public class CustomUserDetailsService implements UserDetailsService {
     @Autowired

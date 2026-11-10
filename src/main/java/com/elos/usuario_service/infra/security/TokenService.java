@@ -11,7 +11,12 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-
+/// Servico de geracao e encriptamento de tokens.
+/// Secret deve ser gerada com mais cuidado.
+/// Os tópicos vem do issuer elos api, que é o responsável por requerir os tokens.
+/// Define a lógica de expiração com base no fuso horário brasileiro.
+///
+/// Esse pacote infra será copiado e colado em todos os outros microsserviços.
 @Service
 public class TokenService {
     @Value("${api.security.token.secret}")

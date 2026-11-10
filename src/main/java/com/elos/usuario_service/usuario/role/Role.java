@@ -5,7 +5,11 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.List;
 import java.util.Set;
-
+/// As roles são funções que todo usuário tem ao se autenticar nesta API.
+/// Em ordem de hierarquia: user->manager->admin.
+/// A rooem admin possui todas as roles anteriores.
+/// AS funções são divididas em authorities, que descrevem ações associadas a cada role e são usadas
+/// pelo method security em todos os controllers para restringir o acesso das entidades aos métodos http.
 @RequiredArgsConstructor
 public enum Role {
     ADMIN

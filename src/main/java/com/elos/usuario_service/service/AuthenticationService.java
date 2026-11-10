@@ -7,7 +7,10 @@ import com.elos.usuario_service.dto.RegisterResponse;
 import com.elos.usuario_service.repository.UsuarioRepository;
 import com.elos.usuario_service.infra.security.TokenService;
 import com.elos.usuario_service.usuario.Usuario;
+import com.elos.usuario_service.usuario.estado.StatusConta;
+import com.elos.usuario_service.usuario.estado.TipoConta;
 import com.elos.usuario_service.usuario.role.Role;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,7 +25,12 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-
+///Service responsável pela autenticação dos usuários (e outros métodos).
+/// Permite o registro de usuários com unicidade de emails e constrói usuários no banco de dados.
+/// Utiliza o token service para gerar tokens de acesso limitado que permitem o acesso do usuário à api.
+/// Possui outros métodos para patch e put de usuários, mas ainda não foram implementados no controller.
+///
+///
 @RequiredArgsConstructor
 @Service
 public class AuthenticationService {
@@ -45,7 +53,7 @@ public class AuthenticationService {
                 .password(passwordEncoder.encode(register.password()))
                 .telefone(register.telefone())
                 .tipoConta(register.tipoConta())
-                .statusConta("ATIVO")
+                .statusConta(StatusConta.ATIVO)
                 .dataCadastro(LocalDate.now())
                 .role(role)
                 .build();
@@ -54,7 +62,7 @@ public class AuthenticationService {
         return new RegisterResponse(user.getUsername(), tokenService.generateToken(user));
     }
     private String normalizar(String email) {
-        return email.strip().toLowerCase(Locale.ROOT);
+        return email.strip();
     }
 
     public boolean updateRole(Usuario user, Role newRole) {
@@ -105,19 +113,40 @@ public class AuthenticationService {
     }
 
     @Transactional
-    public void patchUser(Usuario user, Map<String, Object> updates) {
-        updates.forEach((campo, valor) -> {
-            if (!CAMPOS_EDITAVEIS.contains(campo))
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Campo não editável: " + campo);
-            if (!(valor instanceof String texto) || texto.isBlank())
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Valor inválido para " + campo);
-            switch (campo) {
-                case "username" -> user.setUsername(texto.strip());
-                case "telefone" -> user.setTelefone(texto.strip());
+    public void patchEntity(Usuario usuario, Map<String, Object> updates) {
+        updates.forEach((key, value) -> {
+
+            if (!CAMPOS_EDITAVEIS.contains(key)) {
+                throw new IllegalArgumentException("Campo não editável via PATCH: " + key);
+            }
+            Field field = ReflectionUtils.findField(usuario.getClass(), key);
+            if (field == null) {
+                throw new IllegalArgumentException("Campo inexistente: " + key);
+            }
+
+            field.setAccessible(true);
+            try {
+                ReflectionUtils.setField(field, usuario, coerceValue(field, value));
+            } catch (IllegalArgumentException e) {
+                throw new IllegalArgumentException(
+                        "Valor inválido para o campo '" + key + "': " + value, e);
             }
         });
-        userRepository.save(user);
+
+        this.userRepository.save(usuario);
     }
 
+    private Object coerceValue(Field field, Object value) {
+        if (value == null) return null;
+        Class<?> tipo = field.getType();
+        if (tipo.isInstance(value)) return value;
+
+        return switch (value) {
+            case Number n when (tipo == Long.class || tipo == long.class) -> n.longValue();
+            case Number n when (tipo == Integer.class || tipo == int.class) -> n.intValue();
+            case Number n when (tipo == Double.class || tipo == double.class) -> n.doubleValue();
+            default -> value;
+        };
+    }
 }
 

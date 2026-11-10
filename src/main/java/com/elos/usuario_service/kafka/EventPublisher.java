@@ -1,4 +1,4 @@
-package com.elos.usuario_service;
+package com.elos.usuario_service.kafka;
 
 import com.elos.usuario_service.dto.PrestadorAprovado;
 import com.elos.usuario_service.dto.PrestadorRejeitado;
@@ -7,7 +7,8 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
-
+/// Producer deste microsservice.
+///  envia uma aprovacao para o tópico de aprovacao e rejeicao de prestadores, no microsservice de catálogo.
 @Component
 @RequiredArgsConstructor
 public class EventPublisher {

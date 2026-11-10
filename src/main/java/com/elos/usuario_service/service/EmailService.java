@@ -8,7 +8,10 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-
+/// Serviço de email do spring para requisicao de reset de senha.
+/// Será usado em PasswordResetService.java para enviar os emails pelo gmail api.
+/// Utiliza a variavel de ambiente gmail da elos para enviar os emails.
+/// por equanto, por nao termos um dominio, aparecem na caixa de spam.
 @Service
 @RequiredArgsConstructor
 @Slf4j

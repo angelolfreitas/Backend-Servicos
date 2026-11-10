@@ -1,12 +1,12 @@
 package com.elos.usuario_service.dto;
 
+import com.elos.usuario_service.usuario.estado.TipoPrestador;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 
 public record CandidaturaRequest(
         @NotNull(message = "Informe PF ou PJ")
-        @Pattern(regexp = "PF|PJ", message = "tipoPrestador deve ser PF ou PJ")
-        String tipoPrestador,
+        TipoPrestador tipoPrestador,
 
         @Pattern(regexp = "\\d{11}", message = "CPF deve ter 11 dígitos")
         String cpf,

@@ -11,7 +11,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
-
+///Central de exceptions. Trata invalidacoes nos dtos de requests nos controllers.
 @RestControllerAdvice
 public class ApiExceptionHandler {
 

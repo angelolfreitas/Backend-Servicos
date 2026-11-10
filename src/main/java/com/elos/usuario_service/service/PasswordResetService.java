@@ -23,7 +23,14 @@ import java.time.Instant;
 import java.util.Base64;
 import java.util.HexFormat;
 import java.util.Locale;
-
+/// Serviço de escrita e processamento do envio de emails.
+/// Valida os tokens para limitar o tempo disponível apra altear a senha.
+/// A funcao solicitar() recebe o email do destinatário, formata e gera um token
+/// simples para validade do serviço.
+/// Depois, retira serviços anteriores, salva o pedido no token service por 30 minutos
+/// e envia uma mensagem personalizada para o destinatário com a url de redefinicao de senha no front.
+///
+/// A funcao redefinir invalida o token e salva no banco de dados a nova senha do usuário, criptografada.
 @Service
 @RequiredArgsConstructor
 public class PasswordResetService {
@@ -40,7 +47,7 @@ public class PasswordResetService {
 
     @Transactional
     public void solicitar(String emailBruto) {
-        String email = emailBruto.strip().toLowerCase(Locale.ROOT);
+        String email = emailBruto.strip();
 
         // não revela se o e-mail existe
         userRepository.findByEmail(email).ifPresent(user -> {

@@ -21,7 +21,8 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
-
+/// Configuracao de segurança da api. contém as endpoints desprotegidas e a política de segurança.
+/// Processa as requisiceos por um filtro de segurança em cada pedido, buscando a autenticacao.
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity

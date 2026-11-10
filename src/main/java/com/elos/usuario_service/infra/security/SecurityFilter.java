@@ -14,7 +14,10 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-//estudar filter depois
+/// componente que itera sobre as requisicoes internamente.
+/// filtra o bearer token e estabelece as regras para análise da api, impendindo terceiros de
+/// fazer requisicoes ao sistema.
+/// De todo modo, reaplica o filtro.
 @Component
 public class SecurityFilter extends OncePerRequestFilter {
     @Autowired

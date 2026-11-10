@@ -13,7 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Optional;
-
+/// Controller voltado para autenticacao. Permite logar, resetar a senha e criar conta.
+/// Em breve permitirá patch e put de usuários.
 @RestController
 @RequestMapping("/auth")
 @AllArgsConstructor

@@ -18,7 +18,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
-
+/// Endpoints do prestador. Permite enviar documentos e arquivos, listar os próprios doucmentos, candidatar-se a prestador
+/// e exibir dados da própria candidatura com base na sessão logada.
 @RestController
 @RequestMapping("/prestadores")
 @RequiredArgsConstructor

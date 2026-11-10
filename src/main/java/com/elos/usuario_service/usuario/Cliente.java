@@ -6,8 +6,11 @@ import lombok.Setter;
 
 import java.io.Serial;
 import java.io.Serializable;
-
-/** Entidade do modelo ELOS. Relacionamentos mantidos como IDs nesta primeira etapa para facilitar futura divisão em microsserviços. */
+/**
+ * Entidade Cliente. Herdada na tabela de usuários para evitar a redundância de campos.
+ * Implementa serializable para transmissao de dados entre os microsserviços.
+ * Utiliza os recursos do lombok para economizar código boilerplate
+ */
 @Setter
 @Getter
 @Entity

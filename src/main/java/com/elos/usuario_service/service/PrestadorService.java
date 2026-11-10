@@ -8,6 +8,8 @@ import com.elos.usuario_service.repository.DocumentoRepository;
 import com.elos.usuario_service.repository.PrestadorRepository;
 import com.elos.usuario_service.usuario.Documento;
 import com.elos.usuario_service.usuario.Prestador;
+import com.elos.usuario_service.usuario.estado.StatusAnalise;
+import com.elos.usuario_service.usuario.estado.TipoPrestador;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
@@ -16,6 +18,20 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+
+///
+/// Servico de prestador.
+/// Procura ou cria um novo prestador na candidatura. Se a candidatura for rejeitada ou já estiver salva no banco,
+/// retorna ma exceção.
+/// Verifica se a conta é diferente de pf ou pj e se os campos estão conformes.
+///
+/// Depois, salva o prestador com os dados do usuário com status pendente.
+/// Permite verificar a prórpia candidatura e a lsitagem de candidaturas pendentes.
+///
+/// Na funcao aprovado, se o prestador estiver em pendencia e tiver pelo menos um documento aprovado, permite
+/// a aprovação pelo admin.
+///
+/// Na lógica de rejeição, se o prestador nao estiver rejeitado, permite a rejeição pelo admin.
 @Service
 @RequiredArgsConstructor
 public class PrestadorService {
@@ -26,11 +42,11 @@ public class PrestadorService {
     @Transactional
     public PrestadorResponse candidatar(Long idUsuario, CandidaturaRequest req) {
         Prestador p = repository.findByIdUsuario(idUsuario).orElseGet(Prestador::new);
-        if (p.getIdPrestador() != null && !"REJEITADO".equals(p.getStatusAprovacao()))
+        if (p.getIdPrestador() != null && !StatusAnalise.REJEITADO.equals(p.getStatusAprovacao()))
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Você já enviou uma candidatura");
 
-        boolean pf = "PF".equals(req.tipoPrestador());
-        boolean pj = "PJ".equals(req.tipoPrestador());
+        boolean pf = TipoPrestador.PF.equals(req.tipoPrestador());
+        boolean pj = TipoPrestador.PJ.equals(req.tipoPrestador());
         if (!pf && !pj)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "tipoPrestador deve ser PF ou PJ");
         if (pf && (req.cpf() == null || req.cpf().isBlank()))
@@ -42,7 +58,7 @@ public class PrestadorService {
         p.setTipoPrestador(req.tipoPrestador());
         p.setCpf(pf ? req.cpf() : null);
         p.setCnpj(pj ? req.cnpj() : null);
-        p.setStatusAprovacao("PENDENTE");
+        p.setStatusAprovacao(StatusAnalise.PENDENTE);
         return PrestadorResponse.criar(repository.save(p));
     }
 
@@ -52,21 +68,21 @@ public class PrestadorService {
     }
 
     public List<PrestadorResponse> pendentes() {
-        return repository.findByStatusAprovacao("PENDENTE").stream().map(PrestadorResponse::criar).toList();
+        return repository.findByStatusAprovacao(StatusAnalise.PENDENTE).stream().map(PrestadorResponse::criar).toList();
     }
 
     @Transactional
     public void aprovar(Long id) {
         Prestador p = buscar(id);
-        if ("APROVADO".equals(p.getStatusAprovacao()))
+        if (StatusAnalise.APROVADO.equals(p.getStatusAprovacao()))
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Prestador já aprovado");
         List<Documento> docs = documentos.findByIdPrestador(id);
-        boolean temAprovado = docs.stream().anyMatch(d -> "APROVADO".equals(d.getStatusAnalise()));
-        boolean temPendente = docs.stream().anyMatch(d -> "PENDENTE".equals(d.getStatusAnalise()));
+        boolean temAprovado = docs.stream().anyMatch(d -> d.getStatusAnalise() == StatusAnalise.APROVADO);
+        boolean temPendente = docs.stream().anyMatch(d -> d.getStatusAnalise() == StatusAnalise.PENDENTE);
         if (!temAprovado || temPendente)
             throw new ResponseStatusException(HttpStatus.CONFLICT,
                     "Precisa de ao menos um documento aprovado e nenhum pendente de análise");
-        p.setStatusAprovacao("APROVADO");
+        p.setStatusAprovacao(StatusAnalise.APROVADO);
         repository.save(p);
         events.publishEvent(new PrestadorAprovado(p.getIdPrestador(), p.getIdUsuario()));
     }
@@ -74,9 +90,9 @@ public class PrestadorService {
     @Transactional
     public void rejeitar(Long id) {
         Prestador p = buscar(id);
-        if ("REJEITADO".equals(p.getStatusAprovacao()))
+        if (StatusAnalise.REJEITADO.equals(p.getStatusAprovacao()))
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Prestador já rejeitado");
-        p.setStatusAprovacao("REJEITADO");
+        p.setStatusAprovacao(StatusAnalise.REJEITADO);
         repository.save(p);
         events.publishEvent(new PrestadorRejeitado(p.getIdPrestador(), p.getIdUsuario()));
     }

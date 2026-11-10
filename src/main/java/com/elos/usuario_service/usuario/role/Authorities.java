@@ -1,7 +1,8 @@
 package com.elos.usuario_service.usuario.role;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-
+/// Aqui é a definição das authorities e a formatação para a loeitura do spring method security.
+/// Recorrendo ao lombok para evitar escrita de código boilerplate.
 @RequiredArgsConstructor
 public enum Authorities {
     ADMIN_READ("admin::read"),

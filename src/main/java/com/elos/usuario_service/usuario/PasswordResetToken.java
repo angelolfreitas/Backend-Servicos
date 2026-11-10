@@ -5,6 +5,10 @@ import lombok.*;
 
 import java.time.Instant;
 
+///
+/// Recurso para reset de senha. Será uma persistência de acesso de um usuário
+/// para que sua senha possa ser alterada após uma requisição enviada por email.
+/// Só pode ser usada uma vez.
 @Entity
 @Table(name = "password_reset_token")
 @Getter

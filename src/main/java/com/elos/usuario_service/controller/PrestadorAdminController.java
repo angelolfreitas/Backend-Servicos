@@ -8,7 +8,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+///Tela de prestadores para os admins.
+/// Permite aprovar ou rejeitar uma candidatura e lista os prestadores em pendência.
+///
 @RestController
 @RequestMapping("/admin/prestadores")
 @RequiredArgsConstructor
